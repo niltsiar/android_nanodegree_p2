@@ -48,9 +48,11 @@ public class MovieListActivity extends AppCompatActivity {
 
         if (id == R.id.action_sort_by_popularity) {
             saveSortOrderPreferences(prefSortOrderByPopularity);
+            sortMovies(prefSortOrderByPopularity);
             return true;
         } else if (id == R.id.action_sort_by_top_rated) {
             saveSortOrderPreferences(prefSortOrderByTopRated);
+            sortMovies(prefSortOrderByTopRated);
             return true;
         }
 
@@ -60,5 +62,12 @@ public class MovieListActivity extends AppCompatActivity {
     private void saveSortOrderPreferences(final String sortOrder) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         prefs.edit().putString(prefSortOrder, sortOrder).apply();
+    }
+
+    private void sortMovies(final String sortOrder) {
+        MovieListActivityFragment movieListActivityFragment = (MovieListActivityFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_movie_list);
+        if (null != movieListActivityFragment) {
+            movieListActivityFragment.sortMovies(sortOrder);
+        }
     }
 }

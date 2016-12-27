@@ -90,8 +90,12 @@ public class MovieListActivityFragment extends Fragment implements MovieArrayAda
     public void onResume() {
         super.onResume();
         final String sortByFromSettings = getSortByFromSettings();
-        if (!sortByFromSettings.equals(lastSortBy)) {
-            lastSortBy = sortByFromSettings;
+        sortMovies(sortByFromSettings);
+    }
+
+    public void sortMovies(final String sortBy) {
+        if (!sortBy.equals(lastSortBy)) {
+            lastSortBy = sortBy;
             refreshMovies(lastSortBy);
         }
     }
