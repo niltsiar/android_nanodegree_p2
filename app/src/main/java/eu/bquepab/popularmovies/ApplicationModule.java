@@ -33,7 +33,7 @@ public class ApplicationModule {
                 }
             });
             loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-            okHttpClientBuilder.addNetworkInterceptor(loggingInterceptor).build();
+            okHttpClientBuilder.addInterceptor(loggingInterceptor).build();
         }
         return okHttpClientBuilder.build();
     }
