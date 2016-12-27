@@ -1,10 +1,10 @@
 package eu.bquepab.popularmovies.api;
 
-import com.ryanharter.auto.value.moshi.AutoValueMoshiAdapterFactory;
 import com.squareup.moshi.Moshi;
 import dagger.Module;
 import dagger.Provides;
 import eu.bquepab.popularmovies.BuildConfig;
+import eu.bquepab.popularmovies.util.PopularMoviesAdapterFactory;
 import javax.inject.Singleton;
 import okhttp3.OkHttpClient;
 import retrofit2.Converter;
@@ -31,8 +31,7 @@ public class ApiModule {
     }
 
     private Converter.Factory providesMoshiConverterFactory() {
-        return MoshiConverterFactory.create(new Moshi.Builder()
-                                                    .add(new AutoValueMoshiAdapterFactory())
-                                                    .build());
+        return MoshiConverterFactory.create(new Moshi.Builder().add(PopularMoviesAdapterFactory.create())
+                                                               .build());
     }
 }
