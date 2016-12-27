@@ -1,4 +1,4 @@
-# Popular Movies Stage 1
+# Popular Movies Stage 2
 
 App made for Android Developer Nanodegree program.
 
