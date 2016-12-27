@@ -20,11 +20,12 @@ import eu.bquepab.popularmovies.R;
 import eu.bquepab.popularmovies.api.DiscoverResponse;
 import eu.bquepab.popularmovies.api.TmdbService;
 import eu.bquepab.popularmovies.model.Movie;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import java.util.ArrayList;
 import javax.inject.Inject;
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+
 
 /**
  * A placeholder fragment containing a simple view.
@@ -112,6 +113,21 @@ public class MovieListActivityFragment extends Fragment implements MovieArrayAda
                     movies = new ArrayList<>(discoverResponse.results());
                     movieArrayAdapter.setMovies(movies);
                 });
+    }
+
+    private void refreshMovies(final String sortBy) {
+        Observable<DiscoverResponse> responseObservable;
+        if (prefSortOrderByTopRated.equals(sortBy)) {
+            responseObservable = tmdbService.getTopRatedMovies(BuildConfig.THE_MOVIE_DATABASE_API_KEY);
+        } else {
+            responseObservable = tmdbService.getPopularMovies(BuildConfig.THE_MOVIE_DATABASE_API_KEY);
+        }
+        responseObservable.subscribeOn(Schedulers.io())
+                          .observeOn(AndroidSchedulers.mainThread())
+                          .subscribe(discoverResponse -> {
+                              movies = new ArrayList<>(discoverResponse.results());
+                              movieArrayAdapter.setMovies(movies);
+                          });
     }
 
     @Override
