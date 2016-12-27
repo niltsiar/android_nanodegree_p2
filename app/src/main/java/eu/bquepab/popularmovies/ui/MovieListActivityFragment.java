@@ -115,21 +115,6 @@ public class MovieListActivityFragment extends Fragment implements MovieArrayAda
                 });
     }
 
-    private void refreshMovies(final String sortBy) {
-        Observable<DiscoverResponse> responseObservable;
-        if (prefSortOrderByTopRated.equals(sortBy)) {
-            responseObservable = tmdbService.getTopRatedMovies(BuildConfig.THE_MOVIE_DATABASE_API_KEY);
-        } else {
-            responseObservable = tmdbService.getPopularMovies(BuildConfig.THE_MOVIE_DATABASE_API_KEY);
-        }
-        responseObservable.subscribeOn(Schedulers.io())
-                          .observeOn(AndroidSchedulers.mainThread())
-                          .subscribe(discoverResponse -> {
-                              movies = new ArrayList<>(discoverResponse.results());
-                              movieArrayAdapter.setMovies(movies);
-                          });
-    }
-
     @Override
     public void onSaveInstanceState(final Bundle outState) {
         super.onSaveInstanceState(outState);
