@@ -24,7 +24,6 @@ THE_MOVIE_DATABASE_API_KEY="YOUR_API_KEY_GOES_HERE"
 * [AutoValue](https://github.com/google/auto/tree/master/value)
 * [AutoValue Moshi](https://github.com/rharter/auto-value-moshi)
 * [AutoValue Parcel](https://github.com/rharter/auto-value-parcel)
-* [Android APT](https://bitbucket.org/hvisser/android-apt)
 * [Gradle Git](https://github.com/ajoberstar/gradle-git)
 * [Gradle Versions Plugin](https://github.com/ben-manes/gradle-versions-plugin)
 * [Dexcount Gradle Plugin](https://github.com/KeepSafe/dexcount-gradle-plugin)
