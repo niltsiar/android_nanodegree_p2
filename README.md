@@ -17,6 +17,7 @@ THE_MOVIE_DATABASE_API_KEY="YOUR_API_KEY_GOES_HERE"
 * [RxJava](https://github.com/ReactiveX/RxJava)
 * [RxAndroid](https://github.com/ReactiveX/RxAndroid)
 * [Retrofit](http://square.github.io/retrofit/)
+* [Retrofit RxJava2 Adapter](https://github.com/JakeWharton/retrofit2-rxjava2-adapter)
 * [OkHttp](http://square.github.io/okhttp/)
 * [Moshi](https://github.com/square/moshi)
 * [Picasso](http://square.github.io/picasso/)
