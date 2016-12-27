@@ -10,7 +10,7 @@ buildscript {
             retrolambda              : '2.3.0',
             retrolambda_gradle_plugin: '3.2.5',
 
-            support                  : '24.0.0',
+            support                  : '25.1.0',
             junit                    : '4.12',
             dagger                   : '2.5',
             butterknife              : '8.1.0',
@@ -53,8 +53,8 @@ def appVersionCode = versionMajor * 10000 + versionMinor * 1000 + versionPatch *
 def appVersionName = "${versionMajor}.${versionMinor}.${versionPatch}"
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.0"
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -63,7 +63,7 @@ android {
     defaultConfig {
         applicationId "eu.bquepab.popularmovies"
         minSdkVersion 15
-        targetSdkVersion 24
+        targetSdkVersion 25
         versionCode appVersionCode
         versionName appVersionName
 
