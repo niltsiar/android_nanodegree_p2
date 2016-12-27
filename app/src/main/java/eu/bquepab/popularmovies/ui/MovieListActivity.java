@@ -1,11 +1,13 @@
 package eu.bquepab.popularmovies.ui;
 
-import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import eu.bquepab.popularmovies.R;
@@ -14,6 +16,12 @@ public class MovieListActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindString(R.string.pref_sort_order_key)
+    String prefSortOrder;
+    @BindString(R.string.pref_sort_order_popularity_value)
+    String prefSortOrderByPopularity;
+    @BindString(R.string.pref_sort_order_top_rated_value)
+    String prefSortOrderByTopRated;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -38,13 +46,28 @@ public class MovieListActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
-            startActivity(intent);
+        if (id == R.id.action_sort_by_popularity) {
+            saveSortOrderPreferences(prefSortOrderByPopularity);
+            sortMovies(prefSortOrderByPopularity);
+            return true;
+        } else if (id == R.id.action_sort_by_top_rated) {
+            saveSortOrderPreferences(prefSortOrderByTopRated);
+            sortMovies(prefSortOrderByTopRated);
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void saveSortOrderPreferences(final String sortOrder) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        prefs.edit().putString(prefSortOrder, sortOrder).apply();
+    }
+
+    private void sortMovies(final String sortOrder) {
+        MovieListActivityFragment movieListActivityFragment = (MovieListActivityFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_movie_list);
+        if (null != movieListActivityFragment) {
+            movieListActivityFragment.sortMovies(sortOrder);
+        }
     }
 }
