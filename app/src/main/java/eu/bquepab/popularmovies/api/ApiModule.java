@@ -17,7 +17,7 @@ public class ApiModule {
 
     @Provides
     @Singleton
-    Retrofit providesRetrofit(final OkHttpClient okHttpClient) {
+    static Retrofit providesRetrofit(final OkHttpClient okHttpClient) {
         return new Retrofit.Builder().baseUrl(BuildConfig.THE_MOVE_DATABASE_API_URL)
                                      .client(okHttpClient)
                                      .addConverterFactory(providesMoshiConverterFactory())
@@ -26,11 +26,11 @@ public class ApiModule {
     }
 
     @Provides
-    TmdbService providesTmdbService(final Retrofit retrofit) {
+    static TmdbService providesTmdbService(final Retrofit retrofit) {
         return retrofit.create(TmdbService.class);
     }
 
-    private Converter.Factory providesMoshiConverterFactory() {
+    private static Converter.Factory providesMoshiConverterFactory() {
         return MoshiConverterFactory.create(new Moshi.Builder().add(PopularMoviesAdapterFactory.create())
                                                                .build());
     }

@@ -24,13 +24,7 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    Context providesContext() {
-        return application;
-    }
-
-    @Provides
-    @Singleton
-    OkHttpClient providesOkHttpClient() {
+    static OkHttpClient providesOkHttpClient() {
         final String OKHTTP_TAG = "OkHttp";
         final OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder();
         if (BuildConfig.DEBUG) {
@@ -49,7 +43,7 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    Picasso providesPicasso(final Context context, final OkHttpClient okHttpClient) {
+    static Picasso providesPicasso(final Context context, final OkHttpClient okHttpClient) {
 
         //This code for cache is taken from OkHttp3Downloader until Jake Wharton exposes it somehow
         final String PICASSO_CACHE = "picasso-cache";
@@ -81,5 +75,11 @@ public class ApplicationModule {
                 .downloader(new OkHttp3Downloader(cachedOkHttpClient))
                 .indicatorsEnabled(BuildConfig.DEBUG)
                 .build();
+    }
+
+    @Provides
+    @Singleton
+    Context providesContext() {
+        return application;
     }
 }
