@@ -60,9 +60,7 @@ public class MovieListActivityFragment extends Fragment implements MovieArrayAda
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
-
         final View view = inflater.inflate(R.layout.fragment_movie_list, container, false);
-
         PopularMoviesApplication.component().inject(this);
         ButterKnife.bind(this, view);
 
