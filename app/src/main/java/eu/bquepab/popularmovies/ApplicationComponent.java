@@ -3,6 +3,7 @@ package eu.bquepab.popularmovies;
 import dagger.Component;
 import eu.bquepab.popularmovies.api.ApiModule;
 import eu.bquepab.popularmovies.ui.MovieDetailsActivityFragment;
+import eu.bquepab.popularmovies.ui.MovieDetailsReviewsActivityFragment;
 import eu.bquepab.popularmovies.ui.MovieListActivityFragment;
 import eu.bquepab.popularmovies.ui.MovieViewHolder;
 import javax.inject.Singleton;
@@ -16,6 +17,8 @@ public interface ApplicationComponent {
     void inject(MovieViewHolder movieViewHolder);
 
     void inject(MovieDetailsActivityFragment movieDetailsActivityFragment);
+
+    void inject(MovieDetailsReviewsActivityFragment movieDetailsReviewsActivityFragment);
 
     final class Initializer {
         private Initializer() {
