@@ -11,4 +11,7 @@
   <string name="pref_sort_order_top_rated_value"
     translatable="false">top_rated</string>
   <string name="pref_sort_order_top_rated_label">Sort by top rated</string>
+  <string name="movie_details_label">Details</string>
+  <string name="movie_reviews_label">Reviews</string>
+  <string name="movie_trailers_label">Trailers</string>
 </resources>

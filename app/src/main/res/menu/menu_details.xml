@@ -1,0 +1,21 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+  <item
+    android:id="@+id/action_movie_details"
+    android:enabled="true"
+    android:icon="@drawable/ic_movie_black_24dp"
+    android:title="@string/movie_details_label"
+    app:showAsAction="ifRoom" />
+  <item
+    android:id="@+id/action_movie_reviews"
+    android:enabled="true"
+    android:icon="@drawable/ic_message_black_24dp"
+    android:title="@string/movie_reviews_label"
+    app:showAsAction="ifRoom" />
+  <item
+    android:id="@+id/action_movie_trailers"
+    android:enabled="true"
+    android:icon="@drawable/ic_play_arrow_black_24dp"
+    android:title="@string/movie_trailers_label"
+    app:showAsAction="ifRoom" />
+</menu>
