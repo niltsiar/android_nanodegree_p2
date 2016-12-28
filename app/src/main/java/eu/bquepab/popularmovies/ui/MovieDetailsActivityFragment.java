@@ -1,7 +1,7 @@
 package eu.bquepab.popularmovies.ui;
 
+import android.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,8 +29,6 @@ public class MovieDetailsActivityFragment extends Fragment {
     TextView movieReleaseDate;
     @BindView(R.id.movie_user_rating)
     TextView movieUserRating;
-    @BindView(R.id.movie_synopsis)
-    TextView movieSynopsis;
 
     @Inject
     Picasso picasso;
@@ -52,7 +50,14 @@ public class MovieDetailsActivityFragment extends Fragment {
         movieTitle.setText(movie.title());
         movieReleaseDate.setText(movie.releaseDate());
         movieUserRating.setText(String.format(Locale.getDefault(), "%.2f", movie.userRating()));
-        movieSynopsis.setText(movie.synopsis());
+
+        MovieDetailsSynopsisActivityFragment synopsisFragment = new MovieDetailsSynopsisActivityFragment();
+        Bundle synosisFragmentArgs = new Bundle();
+        synosisFragmentArgs.putString(MovieDetailsSynopsisActivityFragment.SYNOPSIS, movie.synopsis());
+        synopsisFragment.setArguments(synosisFragmentArgs);
+
+        getFragmentManager().beginTransaction().add(R.id.container_movie_details, synopsisFragment)
+                .commit();
 
         return view;
     }
