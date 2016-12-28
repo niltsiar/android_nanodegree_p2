@@ -1,7 +1,9 @@
 package eu.bquepab.popularmovies.ui;
 
 import android.os.Bundle;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,8 +31,8 @@ public class MovieDetailsActivityFragment extends Fragment {
     TextView movieReleaseDate;
     @BindView(R.id.movie_user_rating)
     TextView movieUserRating;
-    @BindView(R.id.movie_synopsis)
-    TextView movieSynopsis;
+    @BindView(R.id.bottom_navigation)
+    BottomNavigationView bottomNavigationView;
 
     @Inject
     Picasso picasso;
@@ -46,14 +48,54 @@ public class MovieDetailsActivityFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_movie_details, container, false);
         PopularMoviesApplication.component().inject(this);
         ButterKnife.bind(this, view);
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(final View view, final Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         movie = getActivity().getIntent().getParcelableExtra(MovieDetailsActivity.MOVIE);
 
         picasso.load(movie.posterUrl()).into(moviePoster);
         movieTitle.setText(movie.title());
         movieReleaseDate.setText(movie.releaseDate());
         movieUserRating.setText(String.format(Locale.getDefault(), "%.2f", movie.userRating()));
-        movieSynopsis.setText(movie.synopsis());
 
-        return view;
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.action_movie_details:
+                    showMovieDetailsFragment();
+                    break;
+                case R.id.action_movie_reviews:
+                    showMovieReviewsFragment();
+                    break;
+            }
+            return true;
+        });
+
+        showMovieDetailsFragment();
+    }
+
+    private void showMovieDetailsFragment() {
+        MovieDetailsSynopsisActivityFragment synopsisFragment = new MovieDetailsSynopsisActivityFragment();
+        Bundle synosisFragmentArgs = new Bundle();
+        synosisFragmentArgs.putString(MovieDetailsSynopsisActivityFragment.EXTRA_SYNOPSIS, movie.synopsis());
+        synopsisFragment.setArguments(synosisFragmentArgs);
+        showFragment(synopsisFragment);
+    }
+
+    private void showMovieReviewsFragment() {
+        MovieDetailsReviewsActivityFragment reviewsFragment = new MovieDetailsReviewsActivityFragment();
+        Bundle reviewsFragmentArgs = new Bundle();
+        reviewsFragmentArgs.putInt(MovieDetailsReviewsActivityFragment.EXTRA_MOVIE, movie.id());
+        reviewsFragment.setArguments(reviewsFragmentArgs);
+        showFragment(reviewsFragment);
+    }
+
+    private void showFragment(final Fragment fragment) {
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.container_movie_details, fragment);
+        //transaction.addToBackStack(null);
+        transaction.commit();
     }
 }

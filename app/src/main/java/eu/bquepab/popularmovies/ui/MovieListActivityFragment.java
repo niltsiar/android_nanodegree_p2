@@ -17,7 +17,7 @@ import butterknife.ButterKnife;
 import eu.bquepab.popularmovies.BuildConfig;
 import eu.bquepab.popularmovies.PopularMoviesApplication;
 import eu.bquepab.popularmovies.R;
-import eu.bquepab.popularmovies.api.DiscoverResponse;
+import eu.bquepab.popularmovies.api.MovieListResponse;
 import eu.bquepab.popularmovies.api.TmdbService;
 import eu.bquepab.popularmovies.model.Movie;
 import io.reactivex.Observable;
@@ -60,9 +60,7 @@ public class MovieListActivityFragment extends Fragment implements MovieArrayAda
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
-
         final View view = inflater.inflate(R.layout.fragment_movie_list, container, false);
-
         PopularMoviesApplication.component().inject(this);
         ButterKnife.bind(this, view);
 
@@ -105,7 +103,7 @@ public class MovieListActivityFragment extends Fragment implements MovieArrayAda
     }
 
     private void refreshMovies(final String sortBy) {
-        Observable<DiscoverResponse> responseObservable;
+        Observable<MovieListResponse> responseObservable;
         if (prefSortOrderByTopRated.equals(sortBy)) {
             responseObservable = tmdbService.getTopRatedMovies(BuildConfig.THE_MOVIE_DATABASE_API_KEY);
         } else {
@@ -113,8 +111,8 @@ public class MovieListActivityFragment extends Fragment implements MovieArrayAda
         }
         responseObservable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(discoverResponse -> {
-                    movies = new ArrayList<>(discoverResponse.results());
+                .subscribe(moviesResponse -> {
+                    movies = new ArrayList<>(moviesResponse.results());
                     movieArrayAdapter.setMovies(movies);
                 });
     }
