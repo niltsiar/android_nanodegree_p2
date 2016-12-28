@@ -1,5 +1,6 @@
 package eu.bquepab.popularmovies.ui;
 
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,8 +46,9 @@ public class MovieArrayAdapter extends RecyclerView.Adapter<MovieViewHolder> {
     }
 
     public void setMovies(final List<Movie> movies) {
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new MovieDiffCallback(this.movies, movies));
+        diffResult.dispatchUpdatesTo(this);
         this.movies = new ArrayList<>(movies);
-        notifyDataSetChanged();
     }
 
     public interface OnMovieClickListener {
