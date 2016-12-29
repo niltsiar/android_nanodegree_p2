@@ -1,4 +1,4 @@
-package eu.bquepab.popularmovies.ui;
+package eu.bquepab.popularmovies.ui.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import eu.bquepab.popularmovies.R;
 import eu.bquepab.popularmovies.model.Review;
+import eu.bquepab.popularmovies.ui.viewholder.ReviewViewHolder;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -5,7 +5,7 @@ import eu.bquepab.popularmovies.api.ApiModule;
 import eu.bquepab.popularmovies.ui.MovieDetailsActivityFragment;
 import eu.bquepab.popularmovies.ui.MovieDetailsReviewsActivityFragment;
 import eu.bquepab.popularmovies.ui.MovieListActivityFragment;
-import eu.bquepab.popularmovies.ui.MovieViewHolder;
+import eu.bquepab.popularmovies.ui.viewholder.MovieViewHolder;
 import javax.inject.Singleton;
 
 @Singleton

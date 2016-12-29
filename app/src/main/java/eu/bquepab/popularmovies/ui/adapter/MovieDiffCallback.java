@@ -1,4 +1,4 @@
-package eu.bquepab.popularmovies.ui;
+package eu.bquepab.popularmovies.ui.adapter;
 
 import android.support.v7.util.DiffUtil;
 import eu.bquepab.popularmovies.model.Movie;

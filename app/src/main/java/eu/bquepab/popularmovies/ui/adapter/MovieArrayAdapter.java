@@ -1,4 +1,4 @@
-package eu.bquepab.popularmovies.ui;
+package eu.bquepab.popularmovies.ui.adapter;
 
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +9,7 @@ import butterknife.BindInt;
 import butterknife.ButterKnife;
 import eu.bquepab.popularmovies.R;
 import eu.bquepab.popularmovies.model.Movie;
+import eu.bquepab.popularmovies.ui.viewholder.MovieViewHolder;
 import java.util.ArrayList;
 import java.util.List;
 
