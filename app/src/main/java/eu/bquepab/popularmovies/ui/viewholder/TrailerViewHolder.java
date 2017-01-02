@@ -6,10 +6,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
+import eu.bquepab.popularmovies.BuildConfig;
 import eu.bquepab.popularmovies.PopularMoviesApplication;
 import eu.bquepab.popularmovies.R;
 import eu.bquepab.popularmovies.model.Trailer;
+import eu.bquepab.popularmovies.ui.adapter.TrailerArrayAdapter;
 import javax.inject.Inject;
 
 public class TrailerViewHolder extends RecyclerView.ViewHolder {
@@ -23,6 +26,7 @@ public class TrailerViewHolder extends RecyclerView.ViewHolder {
     Picasso picasso;
 
     private Trailer trailer;
+    private TrailerArrayAdapter.OnTrailerClickListener listener;
 
     public TrailerViewHolder(final View itemView) {
         super(itemView);
@@ -30,10 +34,16 @@ public class TrailerViewHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    public void bind(final Trailer trailer) {
+    public void bind(final Trailer trailer, final TrailerArrayAdapter.OnTrailerClickListener listener) {
         this.trailer = trailer;
+        this.listener = listener;
         trailerName.setText(trailer.name());
-        String yt_thumbnail_url = "https://img.youtube.com/vi/" + trailer.key() + "/0.jpg";
-        picasso.load(yt_thumbnail_url).placeholder(R.drawable.ic_play_arrow_black_24dp).into(trailerImage);
+        final String youtube_thumb_url = String.format(BuildConfig.YOUTUBE_IMG_URL, trailer.key());
+        picasso.load(youtube_thumb_url).placeholder(R.drawable.ic_play_arrow_black_24dp).into(trailerImage);
+    }
+
+    @OnClick(R.id.trailer_item)
+    public void onClick() {
+        listener.onItemClick(trailer);
     }
 }

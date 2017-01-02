@@ -13,9 +13,11 @@ import java.util.List;
 public class TrailerArrayAdapter extends RecyclerView.Adapter<TrailerViewHolder> {
 
     private List<Trailer> trailers;
+    private OnTrailerClickListener listener;
 
-    public TrailerArrayAdapter(final List<Trailer> movies) {
+    public TrailerArrayAdapter(final List<Trailer> movies, final OnTrailerClickListener listener) {
         this.trailers = new ArrayList<>(movies);
+        this.listener = listener;
     }
 
     @Override
@@ -26,7 +28,7 @@ public class TrailerArrayAdapter extends RecyclerView.Adapter<TrailerViewHolder>
 
     @Override
     public void onBindViewHolder(final TrailerViewHolder holder, final int position) {
-        holder.bind(trailers.get(position));
+        holder.bind(trailers.get(position), listener);
     }
 
     @Override
@@ -37,5 +39,9 @@ public class TrailerArrayAdapter extends RecyclerView.Adapter<TrailerViewHolder>
     public void setTrailers(final List<Trailer> trailers) {
         this.trailers = new ArrayList<>(trailers);
         notifyDataSetChanged();
+    }
+
+    public interface OnTrailerClickListener {
+        void onItemClick(Trailer trailer);
     }
 }

@@ -1,5 +1,7 @@
 package eu.bquepab.popularmovies.ui;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -22,7 +24,9 @@ import io.reactivex.schedulers.Schedulers;
 import java.util.ArrayList;
 import javax.inject.Inject;
 
-public class MovieDetailsTrailersActivityFragment extends Fragment {
+import static android.content.Intent.ACTION_VIEW;
+
+public class MovieDetailsTrailersActivityFragment extends Fragment implements TrailerArrayAdapter.OnTrailerClickListener {
 
     public static final String EXTRA_MOVIE = "movieId";
     private static final String EXTRA_TRAILERS = "trailers";
@@ -52,7 +56,7 @@ public class MovieDetailsTrailersActivityFragment extends Fragment {
         trailersRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL);
         trailersRecyclerView.addItemDecoration(dividerItemDecoration);
-        trailersArrayAdapter = new TrailerArrayAdapter(trailers);
+        trailersArrayAdapter = new TrailerArrayAdapter(trailers, this);
         trailersRecyclerView.setAdapter(trailersArrayAdapter);
 
         if (null != savedInstanceState) {
@@ -83,5 +87,13 @@ public class MovieDetailsTrailersActivityFragment extends Fragment {
                     trailers = new ArrayList<>(trailersResponse.results());
                     trailersArrayAdapter.setTrailers(trailers);
                 });
+    }
+
+    @Override
+    public void onItemClick(final Trailer trailer) {
+        Intent intent = new Intent();
+        intent.setAction(ACTION_VIEW);
+        intent.setData(Uri.parse(String.format(BuildConfig.YOUTUBE_URL, trailer.key())));
+        startActivity(intent);
     }
 }

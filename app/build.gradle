@@ -71,6 +71,8 @@ android {
         buildConfigField "String", "THE_MOVE_DATABASE_API_URL", '"https://api.themoviedb.org/3/"'
         buildConfigField "String", "THE_MOVIE_DATABASE_IMAGE_URL", '"https://image.tmdb.org/t/p/w185"'
         buildConfigField "String", "THE_MOVIE_DATABASE_NO_POSTER_IMAGE_URL", '"https://assets.tmdb.org/assets/7f29bd8b3370c71dd379b0e8b570887c/images/no-poster-w185-v2.png"'
+        buildConfigField "String", "YOUTUBE_URL", '"https://www.youtube.com/watch?v=%s"'
+        buildConfigField "String", "YOUTUBE_IMG_URL", '"https://img.youtube.com/vi/%s/0.jpg"'
     }
     buildTypes {
         release {
