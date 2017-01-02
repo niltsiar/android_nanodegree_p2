@@ -4,8 +4,10 @@ import dagger.Component;
 import eu.bquepab.popularmovies.api.ApiModule;
 import eu.bquepab.popularmovies.ui.MovieDetailsActivityFragment;
 import eu.bquepab.popularmovies.ui.MovieDetailsReviewsActivityFragment;
+import eu.bquepab.popularmovies.ui.MovieDetailsTrailersActivityFragment;
 import eu.bquepab.popularmovies.ui.MovieListActivityFragment;
-import eu.bquepab.popularmovies.ui.MovieViewHolder;
+import eu.bquepab.popularmovies.ui.viewholder.MovieViewHolder;
+import eu.bquepab.popularmovies.ui.viewholder.TrailerViewHolder;
 import javax.inject.Singleton;
 
 @Singleton
@@ -19,6 +21,10 @@ public interface ApplicationComponent {
     void inject(MovieDetailsActivityFragment movieDetailsActivityFragment);
 
     void inject(MovieDetailsReviewsActivityFragment movieDetailsReviewsActivityFragment);
+
+    void inject(MovieDetailsTrailersActivityFragment movieDetailsTrailersActivityFragment);
+
+    void inject(TrailerViewHolder trailerViewHolder);
 
     final class Initializer {
         private Initializer() {

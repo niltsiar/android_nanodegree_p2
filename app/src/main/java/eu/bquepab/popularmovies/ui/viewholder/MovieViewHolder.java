@@ -1,4 +1,4 @@
-package eu.bquepab.popularmovies.ui;
+package eu.bquepab.popularmovies.ui.viewholder;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -10,6 +10,7 @@ import com.squareup.picasso.Picasso;
 import eu.bquepab.popularmovies.PopularMoviesApplication;
 import eu.bquepab.popularmovies.R;
 import eu.bquepab.popularmovies.model.Movie;
+import eu.bquepab.popularmovies.ui.adapter.MovieArrayAdapter;
 import javax.inject.Inject;
 
 public class MovieViewHolder extends RecyclerView.ViewHolder {

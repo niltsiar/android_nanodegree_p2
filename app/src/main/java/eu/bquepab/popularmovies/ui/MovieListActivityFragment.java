@@ -20,6 +20,7 @@ import eu.bquepab.popularmovies.R;
 import eu.bquepab.popularmovies.api.MovieListResponse;
 import eu.bquepab.popularmovies.api.TmdbService;
 import eu.bquepab.popularmovies.model.Movie;
+import eu.bquepab.popularmovies.ui.adapter.MovieArrayAdapter;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;

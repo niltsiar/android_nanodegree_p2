@@ -15,4 +15,7 @@ public interface TmdbService {
 
     @GET("movie/{id}/reviews")
     Observable<ReviewListResponse> getReviews(@Path("id") int movieId, @Query("api_key") String apiKey);
+
+    @GET("movie/{id}/videos")
+    Observable<TrailerListResponse> getTrailers(@Path("id") int movieId, @Query("api_key") String apiKey);
 }

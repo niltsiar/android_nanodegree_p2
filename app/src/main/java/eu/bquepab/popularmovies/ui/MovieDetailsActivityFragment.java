@@ -69,6 +69,9 @@ public class MovieDetailsActivityFragment extends Fragment {
                 case R.id.action_movie_reviews:
                     showMovieReviewsFragment();
                     break;
+                case R.id.action_movie_trailers:
+                    showMovieTrailersFragment();
+                    break;
             }
             return true;
         });
@@ -92,10 +95,17 @@ public class MovieDetailsActivityFragment extends Fragment {
         showFragment(reviewsFragment);
     }
 
+    private void showMovieTrailersFragment() {
+        MovieDetailsTrailersActivityFragment trailersFragment = new MovieDetailsTrailersActivityFragment();
+        Bundle trailersFragmentArgs = new Bundle();
+        trailersFragmentArgs.putInt(MovieDetailsTrailersActivityFragment.EXTRA_MOVIE, movie.id());
+        trailersFragment.setArguments(trailersFragmentArgs);
+        showFragment(trailersFragment);
+    }
+
     private void showFragment(final Fragment fragment) {
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.container_movie_details, fragment);
-        //transaction.addToBackStack(null);
         transaction.commit();
     }
 }
