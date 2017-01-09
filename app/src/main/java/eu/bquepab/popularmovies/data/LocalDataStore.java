@@ -35,4 +35,8 @@ public class LocalDataStore {
     public Single<Boolean> isFavoriteMovie(final Movie movie) {
         return Single.just(RealmFacade.isStored(RealmMovie.class, movie.id()));
     }
+
+    public void deleteMovie(final Movie movie) {
+        RealmFacade.delete(MovieMapper.map(movie), movie.id());
+    }
 }

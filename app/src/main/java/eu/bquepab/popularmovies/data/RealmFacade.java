@@ -15,6 +15,28 @@ public class RealmFacade {
         realm.close();
     }
 
+    public static <T extends RealmObject> void delete(final T entity, final String id) {
+        final Realm realm = Realm.getDefaultInstance();
+
+        realm.executeTransaction(realm1 -> realm1.where(entity.getClass())
+                                                 .equalTo("id", id)
+                                                 .findAll()
+                                                 .deleteAllFromRealm());
+
+        realm.close();
+    }
+
+    public static <T extends RealmObject> void delete(final T entity, final int id) {
+        final Realm realm = Realm.getDefaultInstance();
+
+        realm.executeTransaction(realm1 -> realm1.where(entity.getClass())
+                                                 .equalTo("id", id)
+                                                 .findAll()
+                                                 .deleteAllFromRealm());
+
+        realm.close();
+    }
+
     public static <T extends RealmObject> List<T> getAll(final Class<T> entityClass) {
         final Realm realm = Realm.getDefaultInstance();
 

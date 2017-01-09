@@ -91,6 +91,12 @@ public class MovieDetailsActivityFragment extends Fragment {
             return true;
         });
 
+        showFavoriteMovieStatus();
+
+        showMovieDetailsFragment();
+    }
+
+    private void showFavoriteMovieStatus() {
         localDataStore.isFavoriteMovie(movie)
                       .subscribeOn(Schedulers.io())
                       .observeOn(AndroidSchedulers.mainThread())
@@ -101,13 +107,21 @@ public class MovieDetailsActivityFragment extends Fragment {
                               DrawableCompat.setTint(movieFavoriteIcon.getDrawable(), whiteDark);
                           }
                       });
-
-        showMovieDetailsFragment();
     }
 
     @OnClick(R.id.movie_favorite_icon)
     public void onFavoriteMovie() {
-
+        localDataStore.isFavoriteMovie(movie)
+                      .subscribeOn(Schedulers.io())
+                      .observeOn(AndroidSchedulers.mainThread())
+                      .subscribe(isFavorite -> {
+                          if (isFavorite) {
+                              localDataStore.deleteMovie(movie);
+                          } else {
+                              localDataStore.saveMovie(movie);
+                          }
+                          showFavoriteMovieStatus();
+                      });
     }
 
     private void showMovieDetailsFragment() {
