@@ -30,3 +30,5 @@ THE_MOVIE_DATABASE_API_KEY="YOUR_API_KEY_GOES_HERE"
 * [Dexcount Gradle Plugin](https://github.com/KeepSafe/dexcount-gradle-plugin)
 * [Retrolambda](https://github.com/orfjackal/retrolambda)
 * [Gradle Retrolambda Plugin](https://github.com/evant/gradle-retrolambda)
+* [Realm](https://realm.io/)
+* [Lombok](https://projectlombok.org/)
