@@ -14,7 +14,7 @@ import butterknife.ButterKnife;
 import eu.bquepab.popularmovies.BuildConfig;
 import eu.bquepab.popularmovies.PopularMoviesApplication;
 import eu.bquepab.popularmovies.R;
-import eu.bquepab.popularmovies.api.TmdbService;
+import eu.bquepab.popularmovies.data.api.TmdbService;
 import eu.bquepab.popularmovies.model.Review;
 import eu.bquepab.popularmovies.ui.adapter.ReviewArrayAdapter;
 import io.reactivex.android.schedulers.AndroidSchedulers;

@@ -1,4 +1,4 @@
-package eu.bquepab.popularmovies.api;
+package eu.bquepab.popularmovies.data.api;
 
 import io.reactivex.Observable;
 import retrofit2.http.GET;

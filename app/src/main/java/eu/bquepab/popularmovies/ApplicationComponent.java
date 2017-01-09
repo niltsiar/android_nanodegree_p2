@@ -1,7 +1,7 @@
 package eu.bquepab.popularmovies;
 
 import dagger.Component;
-import eu.bquepab.popularmovies.api.ApiModule;
+import eu.bquepab.popularmovies.data.api.ApiModule;
 import eu.bquepab.popularmovies.ui.MovieDetailsActivityFragment;
 import eu.bquepab.popularmovies.ui.MovieDetailsReviewsActivityFragment;
 import eu.bquepab.popularmovies.ui.MovieDetailsTrailersActivityFragment;

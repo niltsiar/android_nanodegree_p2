@@ -1,8 +1,8 @@
 package eu.bquepab.popularmovies.data;
 
 import eu.bquepab.popularmovies.BuildConfig;
-import eu.bquepab.popularmovies.api.MovieListResponse;
-import eu.bquepab.popularmovies.api.TmdbService;
+import eu.bquepab.popularmovies.data.api.MovieListResponse;
+import eu.bquepab.popularmovies.data.api.TmdbService;
 import eu.bquepab.popularmovies.model.Movie;
 import io.reactivex.Maybe;
 import io.reactivex.schedulers.Schedulers;
