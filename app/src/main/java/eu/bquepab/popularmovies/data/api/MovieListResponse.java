@@ -1,4 +1,4 @@
-package eu.bquepab.popularmovies.api;
+package eu.bquepab.popularmovies.data.api;
 
 import com.google.auto.value.AutoValue;
 import com.squareup.moshi.Json;

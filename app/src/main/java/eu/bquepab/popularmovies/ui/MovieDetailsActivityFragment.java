@@ -4,17 +4,26 @@ import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import eu.bquepab.popularmovies.PopularMoviesApplication;
 import eu.bquepab.popularmovies.R;
+import eu.bquepab.popularmovies.data.DataRepository;
 import eu.bquepab.popularmovies.model.Movie;
+import eu.bquepab.popularmovies.model.Review;
+import eu.bquepab.popularmovies.model.Trailer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import java.util.ArrayList;
 import java.util.Locale;
 import javax.inject.Inject;
 
@@ -33,20 +42,33 @@ public class MovieDetailsActivityFragment extends Fragment {
     TextView movieUserRating;
     @BindView(R.id.bottom_navigation)
     BottomNavigationView bottomNavigationView;
+    @BindView(R.id.movie_favorite_icon)
+    ImageView movieFavoriteIcon;
+    @BindColor(R.color.colorPrimary)
+    int primaryColor;
+    @BindColor(R.color.whiteDark)
+    int whiteDark;
 
     @Inject
     Picasso picasso;
 
+    @Inject
+    DataRepository dataRepository;
+
     private Movie movie;
+    private ArrayList<Review> reviews;
+    private ArrayList<Trailer> trailers;
 
     public MovieDetailsActivityFragment() {
+        reviews = new ArrayList<>(0);
+        trailers = new ArrayList<>(0);
     }
 
     @Override
-    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
-                             final Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_movie_details, container, false);
-        PopularMoviesApplication.component().inject(this);
+        PopularMoviesApplication.component()
+                                .inject(this);
         ButterKnife.bind(this, view);
         return view;
     }
@@ -54,9 +76,11 @@ public class MovieDetailsActivityFragment extends Fragment {
     @Override
     public void onViewCreated(final View view, final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        movie = getActivity().getIntent().getParcelableExtra(MovieDetailsActivity.MOVIE);
+        movie = getActivity().getIntent()
+                             .getParcelableExtra(MovieDetailsActivity.MOVIE);
 
-        picasso.load(movie.posterUrl()).into(moviePoster);
+        picasso.load(movie.posterUrl())
+               .into(moviePoster);
         movieTitle.setText(movie.title());
         movieReleaseDate.setText(movie.releaseDate());
         movieUserRating.setText(String.format(Locale.getDefault(), "%.2f", movie.userRating()));
@@ -76,7 +100,48 @@ public class MovieDetailsActivityFragment extends Fragment {
             return true;
         });
 
+        dataRepository.isFavoriteMovie(movie)
+                      .subscribeOn(Schedulers.io())
+                      .subscribe(isFavorite -> {
+                          dataRepository.getReviews(movie, isFavorite)
+                                        .subscribe(dataReviews -> reviews = new ArrayList<>(dataReviews), exception -> {
+                                        });
+                          dataRepository.getTrailers(movie, isFavorite)
+                                        .subscribe(dataTrailers -> trailers = new ArrayList<>(dataTrailers), exception -> {
+                                        });
+                      });
+
+        showFavoriteMovieStatus();
+
         showMovieDetailsFragment();
+    }
+
+    private void showFavoriteMovieStatus() {
+        dataRepository.isFavoriteMovie(movie)
+                      .subscribeOn(Schedulers.io())
+                      .observeOn(AndroidSchedulers.mainThread())
+                      .subscribe(isFavorite -> {
+                          if (isFavorite) {
+                              DrawableCompat.setTint(movieFavoriteIcon.getDrawable(), primaryColor);
+                          } else {
+                              DrawableCompat.setTint(movieFavoriteIcon.getDrawable(), whiteDark);
+                          }
+                      });
+    }
+
+    @OnClick(R.id.movie_favorite_icon)
+    public void onFavoriteMovie() {
+        dataRepository.isFavoriteMovie(movie)
+                      .subscribeOn(Schedulers.io())
+                      .observeOn(AndroidSchedulers.mainThread())
+                      .subscribe(isFavorite -> {
+                          if (isFavorite) {
+                              dataRepository.deleteMovie(movie);
+                          } else {
+                              dataRepository.saveMovie(movie, reviews, trailers);
+                          }
+                          showFavoriteMovieStatus();
+                      });
     }
 
     private void showMovieDetailsFragment() {
@@ -90,7 +155,7 @@ public class MovieDetailsActivityFragment extends Fragment {
     private void showMovieReviewsFragment() {
         MovieDetailsReviewsActivityFragment reviewsFragment = new MovieDetailsReviewsActivityFragment();
         Bundle reviewsFragmentArgs = new Bundle();
-        reviewsFragmentArgs.putInt(MovieDetailsReviewsActivityFragment.EXTRA_MOVIE, movie.id());
+        reviewsFragmentArgs.putParcelableArrayList(MovieDetailsReviewsActivityFragment.EXTRA_REVIEWS, reviews);
         reviewsFragment.setArguments(reviewsFragmentArgs);
         showFragment(reviewsFragment);
     }
@@ -98,7 +163,7 @@ public class MovieDetailsActivityFragment extends Fragment {
     private void showMovieTrailersFragment() {
         MovieDetailsTrailersActivityFragment trailersFragment = new MovieDetailsTrailersActivityFragment();
         Bundle trailersFragmentArgs = new Bundle();
-        trailersFragmentArgs.putInt(MovieDetailsTrailersActivityFragment.EXTRA_MOVIE, movie.id());
+        trailersFragmentArgs.putParcelableArrayList(MovieDetailsTrailersActivityFragment.EXTRA_TRAILERS, trailers);
         trailersFragment.setArguments(trailersFragmentArgs);
         showFragment(trailersFragment);
     }

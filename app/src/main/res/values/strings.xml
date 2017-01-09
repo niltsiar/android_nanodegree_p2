@@ -11,7 +11,11 @@
   <string name="pref_sort_order_top_rated_value"
     translatable="false">top_rated</string>
   <string name="pref_sort_order_top_rated_label">Sort by top rated</string>
+  <string name="pref_sort_order_favorites_value"
+    translatable="false">favorites</string>
+  <string name="pref_sort_order_favorites_label">Sort by favorites</string>
   <string name="movie_details_label">Details</string>
   <string name="movie_reviews_label">Reviews</string>
   <string name="movie_trailers_label">Trailers</string>
+  <string name="network_error_message">There was a network error&#8230;</string>
 </resources>

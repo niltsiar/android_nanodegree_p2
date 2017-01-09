@@ -22,6 +22,8 @@ public class MovieListActivity extends AppCompatActivity {
     String prefSortOrderByPopularity;
     @BindString(R.string.pref_sort_order_top_rated_value)
     String prefSortOrderByTopRated;
+    @BindString(R.string.pref_sort_order_favorites_value)
+    String prefSortOrderByFavorites;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -54,6 +56,9 @@ public class MovieListActivity extends AppCompatActivity {
             saveSortOrderPreferences(prefSortOrderByTopRated);
             sortMovies(prefSortOrderByTopRated);
             return true;
+        } else if (id == R.id.action_sort_by_favorites) {
+            saveSortOrderPreferences(prefSortOrderByFavorites);
+            sortMovies(prefSortOrderByFavorites);
         }
 
         return super.onOptionsItemSelected(item);

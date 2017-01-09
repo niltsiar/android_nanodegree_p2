@@ -1,4 +1,4 @@
-package eu.bquepab.popularmovies.api;
+package eu.bquepab.popularmovies.data.api;
 
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import com.squareup.moshi.Moshi;

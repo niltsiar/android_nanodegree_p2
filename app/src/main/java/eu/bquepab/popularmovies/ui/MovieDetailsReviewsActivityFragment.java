@@ -11,23 +11,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import eu.bquepab.popularmovies.BuildConfig;
 import eu.bquepab.popularmovies.PopularMoviesApplication;
 import eu.bquepab.popularmovies.R;
-import eu.bquepab.popularmovies.api.TmdbService;
 import eu.bquepab.popularmovies.model.Review;
 import eu.bquepab.popularmovies.ui.adapter.ReviewArrayAdapter;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 import java.util.ArrayList;
-import javax.inject.Inject;
+import java.util.List;
 
 public class MovieDetailsReviewsActivityFragment extends Fragment {
 
-    public static final String EXTRA_MOVIE = "movieId";
-    private static final String EXTRA_REVIEWS = "reviews";
-    @Inject
-    TmdbService tmdbService;
+    public static final String EXTRA_REVIEWS = "reviews";
+
     @BindView(R.id.reviews_view)
     RecyclerView reviewsRecyclerView;
     private ReviewArrayAdapter reviewsArrayAdapter;
@@ -41,7 +35,8 @@ public class MovieDetailsReviewsActivityFragment extends Fragment {
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_movie_details_reviews, container, false);
-        PopularMoviesApplication.component().inject(this);
+        PopularMoviesApplication.component()
+                                .inject(this);
         ButterKnife.bind(this, view);
         return view;
     }
@@ -56,13 +51,11 @@ public class MovieDetailsReviewsActivityFragment extends Fragment {
         reviewsRecyclerView.setAdapter(reviewsArrayAdapter);
 
         if (null != savedInstanceState) {
-            reviews = savedInstanceState.getParcelableArrayList(EXTRA_REVIEWS);
-            reviewsArrayAdapter.setReviews(reviews);
+            refreshReviews(savedInstanceState.getParcelableArrayList(EXTRA_REVIEWS));
         } else {
             Bundle args = getArguments();
-            if (null != args && args.containsKey(EXTRA_MOVIE)) {
-                int movieId = args.getInt(EXTRA_MOVIE);
-                refreshReviews(movieId);
+            if (null != args && args.containsKey(EXTRA_REVIEWS)) {
+                refreshReviews(args.getParcelableArrayList(EXTRA_REVIEWS));
             }
         }
     }
@@ -75,13 +68,8 @@ public class MovieDetailsReviewsActivityFragment extends Fragment {
         }
     }
 
-    private void refreshReviews(final int movieId) {
-        tmdbService.getReviews(movieId, BuildConfig.THE_MOVIE_DATABASE_API_KEY)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(reviewsResponse -> {
-                    reviews = new ArrayList<>(reviewsResponse.results());
-                    reviewsArrayAdapter.setReviews(reviews);
-                });
+    private void refreshReviews(final List<Review> reviews) {
+        this.reviews = new ArrayList<>(reviews);
+        reviewsArrayAdapter.setReviews(this.reviews);
     }
 }
