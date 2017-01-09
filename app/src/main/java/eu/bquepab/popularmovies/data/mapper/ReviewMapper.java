@@ -9,9 +9,10 @@ public class ReviewMapper {
     private ReviewMapper() {
     }
 
-    public static RealmReview map(final Review review) {
+    public static RealmReview map(final int movieId, final Review review) {
         return RealmReview.builder()
                           .id(review.id())
+                          .movieId(movieId)
                           .author(review.author())
                           .content(review.content())
                           .url(review.url())

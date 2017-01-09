@@ -75,4 +75,15 @@ public class RealmFacade {
 
         return result;
     }
+
+    public static <T extends RealmObject> void delete(final Class<T> entityClass, final String field, final int id) {
+        final Realm realm = Realm.getDefaultInstance();
+
+        realm.where(entityClass)
+             .equalTo(field, id)
+             .findAll()
+             .deleteAllFromRealm();
+
+        realm.close();
+    }
 }

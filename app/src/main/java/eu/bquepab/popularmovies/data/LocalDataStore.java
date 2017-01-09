@@ -1,8 +1,11 @@
 package eu.bquepab.popularmovies.data;
 
 import eu.bquepab.popularmovies.data.mapper.MovieMapper;
+import eu.bquepab.popularmovies.data.mapper.ReviewMapper;
 import eu.bquepab.popularmovies.data.model.RealmMovie;
+import eu.bquepab.popularmovies.data.model.RealmReview;
 import eu.bquepab.popularmovies.model.Movie;
+import eu.bquepab.popularmovies.model.Review;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
@@ -25,9 +28,23 @@ public class LocalDataStore {
                   .subscribe(RealmFacade::insert);
     }
 
+    public void saveReviews(final Movie movie, final List<Review> reviews) {
+        Observable.fromIterable(reviews)
+                  .map(review -> ReviewMapper.map(movie.id(), review))
+                  .subscribe(RealmFacade::insert);
+    }
+
     public Maybe<List<Movie>> getMovies() {
         return Observable.fromIterable(RealmFacade.getAll(RealmMovie.class))
                          .map(MovieMapper::map)
+                         .toList()
+                         .toMaybe();
+    }
+
+    public Maybe<List<Review>> getReviews(final Movie movie) {
+        return Observable.fromIterable(RealmFacade.getAll(RealmReview.class))
+                         .filter(review -> review.getMovieId() == movie.id())
+                         .map(ReviewMapper::map)
                          .toList()
                          .toMaybe();
     }
@@ -38,5 +55,9 @@ public class LocalDataStore {
 
     public void deleteMovie(final Movie movie) {
         RealmFacade.delete(MovieMapper.map(movie), movie.id());
+    }
+
+    public void deleteReviews(final Movie movie) {
+        RealmFacade.delete(RealmReview.class, "movieId", movie.id());
     }
 }

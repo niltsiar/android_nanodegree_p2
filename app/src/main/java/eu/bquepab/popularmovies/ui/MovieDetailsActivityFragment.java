@@ -17,10 +17,12 @@ import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import eu.bquepab.popularmovies.PopularMoviesApplication;
 import eu.bquepab.popularmovies.R;
-import eu.bquepab.popularmovies.data.LocalDataStore;
+import eu.bquepab.popularmovies.data.DataRepository;
 import eu.bquepab.popularmovies.model.Movie;
+import eu.bquepab.popularmovies.model.Review;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import java.util.ArrayList;
 import java.util.Locale;
 import javax.inject.Inject;
 
@@ -50,18 +52,19 @@ public class MovieDetailsActivityFragment extends Fragment {
     Picasso picasso;
 
     @Inject
-    LocalDataStore localDataStore;
+    DataRepository dataRepository;
 
     private Movie movie;
+    private ArrayList<Review> reviews = new ArrayList<>();
 
     public MovieDetailsActivityFragment() {
     }
 
     @Override
-    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
-                             final Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_movie_details, container, false);
-        PopularMoviesApplication.component().inject(this);
+        PopularMoviesApplication.component()
+                                .inject(this);
         ButterKnife.bind(this, view);
         return view;
     }
@@ -69,9 +72,11 @@ public class MovieDetailsActivityFragment extends Fragment {
     @Override
     public void onViewCreated(final View view, final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        movie = getActivity().getIntent().getParcelableExtra(MovieDetailsActivity.MOVIE);
+        movie = getActivity().getIntent()
+                             .getParcelableExtra(MovieDetailsActivity.MOVIE);
 
-        picasso.load(movie.posterUrl()).into(moviePoster);
+        picasso.load(movie.posterUrl())
+               .into(moviePoster);
         movieTitle.setText(movie.title());
         movieReleaseDate.setText(movie.releaseDate());
         movieUserRating.setText(String.format(Locale.getDefault(), "%.2f", movie.userRating()));
@@ -91,13 +96,21 @@ public class MovieDetailsActivityFragment extends Fragment {
             return true;
         });
 
+        dataRepository.isFavoriteMovie(movie)
+                      .subscribeOn(Schedulers.io())
+                      .subscribe(isFavorite -> {
+                          dataRepository.getReviews(movie, isFavorite)
+                                        .subscribe(dataReviews -> reviews = new ArrayList<>(dataReviews), exception -> {
+                                        });
+                      });
+
         showFavoriteMovieStatus();
 
         showMovieDetailsFragment();
     }
 
     private void showFavoriteMovieStatus() {
-        localDataStore.isFavoriteMovie(movie)
+        dataRepository.isFavoriteMovie(movie)
                       .subscribeOn(Schedulers.io())
                       .observeOn(AndroidSchedulers.mainThread())
                       .subscribe(isFavorite -> {
@@ -111,14 +124,14 @@ public class MovieDetailsActivityFragment extends Fragment {
 
     @OnClick(R.id.movie_favorite_icon)
     public void onFavoriteMovie() {
-        localDataStore.isFavoriteMovie(movie)
+        dataRepository.isFavoriteMovie(movie)
                       .subscribeOn(Schedulers.io())
                       .observeOn(AndroidSchedulers.mainThread())
                       .subscribe(isFavorite -> {
                           if (isFavorite) {
-                              localDataStore.deleteMovie(movie);
+                              dataRepository.deleteMovie(movie);
                           } else {
-                              localDataStore.saveMovie(movie);
+                              dataRepository.saveMovie(movie, reviews);
                           }
                           showFavoriteMovieStatus();
                       });
@@ -135,7 +148,7 @@ public class MovieDetailsActivityFragment extends Fragment {
     private void showMovieReviewsFragment() {
         MovieDetailsReviewsActivityFragment reviewsFragment = new MovieDetailsReviewsActivityFragment();
         Bundle reviewsFragmentArgs = new Bundle();
-        reviewsFragmentArgs.putInt(MovieDetailsReviewsActivityFragment.EXTRA_MOVIE, movie.id());
+        reviewsFragmentArgs.putParcelableArrayList(MovieDetailsReviewsActivityFragment.EXTRA_REVIEWS, reviews);
         reviewsFragment.setArguments(reviewsFragmentArgs);
         showFragment(reviewsFragment);
     }
