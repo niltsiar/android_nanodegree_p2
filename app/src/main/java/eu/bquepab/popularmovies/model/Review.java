@@ -13,6 +13,10 @@ public abstract class Review implements Parcelable {
         return new AutoValue_Review.MoshiJsonAdapter(moshi);
     }
 
+    public static Builder builder() {
+        return new AutoValue_Review.Builder();
+    }
+
     public abstract String id();
 
     @Nullable
@@ -23,4 +27,17 @@ public abstract class Review implements Parcelable {
 
     @Nullable
     public abstract String url();
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract Builder id(String id);
+
+        public abstract Builder author(String author);
+
+        public abstract Builder content(String content);
+
+        public abstract Builder url(String url);
+
+        public abstract Review build();
+    }
 }

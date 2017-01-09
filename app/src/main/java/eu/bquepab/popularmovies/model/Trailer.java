@@ -13,6 +13,10 @@ public abstract class Trailer implements Parcelable {
         return new AutoValue_Trailer.MoshiJsonAdapter(moshi);
     }
 
+    public static Builder builder() {
+        return new AutoValue_Trailer.Builder();
+    }
+
     public abstract String id();
 
     @Nullable
@@ -29,4 +33,21 @@ public abstract class Trailer implements Parcelable {
 
     @Nullable
     public abstract String type();
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract Builder id(String id);
+
+        public abstract Builder key(String key);
+
+        public abstract Builder name(String name);
+
+        public abstract Builder site(String site);
+
+        public abstract Builder size(Integer size);
+
+        public abstract Builder type(String type);
+
+        public abstract Trailer build();
+    }
 }
