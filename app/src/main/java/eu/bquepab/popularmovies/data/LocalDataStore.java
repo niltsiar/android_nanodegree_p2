@@ -5,6 +5,7 @@ import eu.bquepab.popularmovies.data.model.RealmMovie;
 import eu.bquepab.popularmovies.model.Movie;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -29,5 +30,9 @@ public class LocalDataStore {
                          .map(MovieMapper::map)
                          .toList()
                          .toMaybe();
+    }
+
+    public Single<Boolean> isFavoriteMovie(final Movie movie) {
+        return Single.just(RealmFacade.isStored(RealmMovie.class, movie.id()));
     }
 }

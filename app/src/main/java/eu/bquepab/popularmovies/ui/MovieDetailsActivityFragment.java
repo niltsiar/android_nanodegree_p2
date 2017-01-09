@@ -4,17 +4,23 @@ import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import eu.bquepab.popularmovies.PopularMoviesApplication;
 import eu.bquepab.popularmovies.R;
+import eu.bquepab.popularmovies.data.LocalDataStore;
 import eu.bquepab.popularmovies.model.Movie;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import java.util.Locale;
 import javax.inject.Inject;
 
@@ -33,9 +39,18 @@ public class MovieDetailsActivityFragment extends Fragment {
     TextView movieUserRating;
     @BindView(R.id.bottom_navigation)
     BottomNavigationView bottomNavigationView;
+    @BindView(R.id.movie_favorite_icon)
+    ImageView movieFavoriteIcon;
+    @BindColor(R.color.colorPrimary)
+    int primaryColor;
+    @BindColor(R.color.whiteDark)
+    int whiteDark;
 
     @Inject
     Picasso picasso;
+
+    @Inject
+    LocalDataStore localDataStore;
 
     private Movie movie;
 
@@ -76,7 +91,23 @@ public class MovieDetailsActivityFragment extends Fragment {
             return true;
         });
 
+        localDataStore.isFavoriteMovie(movie)
+                      .subscribeOn(Schedulers.io())
+                      .observeOn(AndroidSchedulers.mainThread())
+                      .subscribe(isFavorite -> {
+                          if (isFavorite) {
+                              DrawableCompat.setTint(movieFavoriteIcon.getDrawable(), primaryColor);
+                          } else {
+                              DrawableCompat.setTint(movieFavoriteIcon.getDrawable(), whiteDark);
+                          }
+                      });
+
         showMovieDetailsFragment();
+    }
+
+    @OnClick(R.id.movie_favorite_icon)
+    public void onFavoriteMovie() {
+
     }
 
     private void showMovieDetailsFragment() {
