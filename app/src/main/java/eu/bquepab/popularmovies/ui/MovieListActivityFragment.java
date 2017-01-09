@@ -137,6 +137,8 @@ public class MovieListActivityFragment extends Fragment implements MovieArrayAda
                            Snackbar.make(view, networkErrorMessage, Snackbar.LENGTH_LONG)
                                    .show();
                        }
+                       movies.clear();
+                       movieArrayAdapter.setMovies(movies);
                    });
     }
 
