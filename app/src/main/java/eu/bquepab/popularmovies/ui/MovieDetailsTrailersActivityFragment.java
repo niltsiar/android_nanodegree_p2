@@ -16,22 +16,17 @@ import butterknife.ButterKnife;
 import eu.bquepab.popularmovies.BuildConfig;
 import eu.bquepab.popularmovies.PopularMoviesApplication;
 import eu.bquepab.popularmovies.R;
-import eu.bquepab.popularmovies.data.api.TmdbService;
 import eu.bquepab.popularmovies.model.Trailer;
 import eu.bquepab.popularmovies.ui.adapter.TrailerArrayAdapter;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 import java.util.ArrayList;
-import javax.inject.Inject;
+import java.util.List;
 
 import static android.content.Intent.ACTION_VIEW;
 
 public class MovieDetailsTrailersActivityFragment extends Fragment implements TrailerArrayAdapter.OnTrailerClickListener {
 
-    public static final String EXTRA_MOVIE = "movieId";
-    private static final String EXTRA_TRAILERS = "trailers";
-    @Inject
-    TmdbService tmdbService;
+    public static final String EXTRA_TRAILERS = "trailers";
+
     @BindView(R.id.trailers_view)
     RecyclerView trailersRecyclerView;
     private TrailerArrayAdapter trailersArrayAdapter;
@@ -60,13 +55,11 @@ public class MovieDetailsTrailersActivityFragment extends Fragment implements Tr
         trailersRecyclerView.setAdapter(trailersArrayAdapter);
 
         if (null != savedInstanceState) {
-            trailers = savedInstanceState.getParcelableArrayList(EXTRA_TRAILERS);
-            trailersArrayAdapter.setTrailers(trailers);
+            refreshTrailers(savedInstanceState.getParcelableArrayList(EXTRA_TRAILERS));
         } else {
             Bundle args = getArguments();
-            if (null != args && args.containsKey(EXTRA_MOVIE)) {
-                int movieId = args.getInt(EXTRA_MOVIE);
-                refreshTrailers(movieId);
+            if (null != args && args.containsKey(EXTRA_TRAILERS)) {
+                refreshTrailers(args.getParcelableArrayList(EXTRA_TRAILERS));
             }
         }
     }
@@ -79,14 +72,9 @@ public class MovieDetailsTrailersActivityFragment extends Fragment implements Tr
         }
     }
 
-    private void refreshTrailers(final int movieId) {
-        tmdbService.getTrailers(movieId, BuildConfig.THE_MOVIE_DATABASE_API_KEY)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(trailersResponse -> {
-                    trailers = new ArrayList<>(trailersResponse.results());
-                    trailersArrayAdapter.setTrailers(trailers);
-                });
+    private void refreshTrailers(final List<Trailer> trailers) {
+        this.trailers = new ArrayList<>(trailers);
+        trailersArrayAdapter.setTrailers(this.trailers);
     }
 
     @Override

@@ -20,6 +20,7 @@ import eu.bquepab.popularmovies.R;
 import eu.bquepab.popularmovies.data.DataRepository;
 import eu.bquepab.popularmovies.model.Movie;
 import eu.bquepab.popularmovies.model.Review;
+import eu.bquepab.popularmovies.model.Trailer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import java.util.ArrayList;
@@ -55,9 +56,12 @@ public class MovieDetailsActivityFragment extends Fragment {
     DataRepository dataRepository;
 
     private Movie movie;
-    private ArrayList<Review> reviews = new ArrayList<>();
+    private ArrayList<Review> reviews;
+    private ArrayList<Trailer> trailers;
 
     public MovieDetailsActivityFragment() {
+        reviews = new ArrayList<>(0);
+        trailers = new ArrayList<>(0);
     }
 
     @Override
@@ -102,6 +106,9 @@ public class MovieDetailsActivityFragment extends Fragment {
                           dataRepository.getReviews(movie, isFavorite)
                                         .subscribe(dataReviews -> reviews = new ArrayList<>(dataReviews), exception -> {
                                         });
+                          dataRepository.getTrailers(movie, isFavorite)
+                                        .subscribe(dataTrailers -> trailers = new ArrayList<>(dataTrailers), exception -> {
+                                        });
                       });
 
         showFavoriteMovieStatus();
@@ -131,7 +138,7 @@ public class MovieDetailsActivityFragment extends Fragment {
                           if (isFavorite) {
                               dataRepository.deleteMovie(movie);
                           } else {
-                              dataRepository.saveMovie(movie, reviews);
+                              dataRepository.saveMovie(movie, reviews, trailers);
                           }
                           showFavoriteMovieStatus();
                       });
@@ -156,7 +163,7 @@ public class MovieDetailsActivityFragment extends Fragment {
     private void showMovieTrailersFragment() {
         MovieDetailsTrailersActivityFragment trailersFragment = new MovieDetailsTrailersActivityFragment();
         Bundle trailersFragmentArgs = new Bundle();
-        trailersFragmentArgs.putInt(MovieDetailsTrailersActivityFragment.EXTRA_MOVIE, movie.id());
+        trailersFragmentArgs.putParcelableArrayList(MovieDetailsTrailersActivityFragment.EXTRA_TRAILERS, trailers);
         trailersFragment.setArguments(trailersFragmentArgs);
         showFragment(trailersFragment);
     }
