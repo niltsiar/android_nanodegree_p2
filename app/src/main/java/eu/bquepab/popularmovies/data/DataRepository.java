@@ -31,9 +31,10 @@ public class DataRepository {
         return localDataStore.getMovies();
     }
 
-    public void saveMovie(final Movie movie, final List<Review> reviews) {
+    public void saveMovie(final Movie movie, final List<Review> reviews, final List<Trailer> trailers) {
         localDataStore.saveMovie(movie);
         localDataStore.saveReviews(movie, reviews);
+        localDataStore.saveTrailers(movie, trailers);
     }
 
     public void saveMovies(final List<Movie> movies) {
@@ -43,6 +44,7 @@ public class DataRepository {
     public void deleteMovie(final Movie movie) {
         localDataStore.deleteMovie(movie);
         localDataStore.deleteReviews(movie);
+        localDataStore.deleteTrailers(movie);
     }
 
     public Single<Boolean> isFavoriteMovie(final Movie movie) {
@@ -57,7 +59,11 @@ public class DataRepository {
         }
     }
 
-    public Maybe<List<Trailer>> getTrailers(final Movie movie) {
-        return cloudDataStorage.getTrailers(movie.id());
+    public Maybe<List<Trailer>> getTrailers(final Movie movie, final boolean isFavorite) {
+        if (isFavorite) {
+            return localDataStore.getTrailers(movie);
+        } else {
+            return cloudDataStorage.getTrailers(movie.id());
+        }
     }
 }

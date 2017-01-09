@@ -9,9 +9,10 @@ public class TrailerMapper {
     private TrailerMapper() {
     }
 
-    public static RealmTrailer map(final Trailer trailer) {
+    public static RealmTrailer map(final int movieId, final Trailer trailer) {
         return RealmTrailer.builder()
                            .id(trailer.id())
+                           .movieId(movieId)
                            .key(trailer.key())
                            .name(trailer.name())
                            .site(trailer.site())

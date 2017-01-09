@@ -17,6 +17,9 @@ public class RealmTrailer extends RealmObject {
     @Getter
     private String id;
 
+    @Getter
+    private int movieId;
+
     @Nullable
     @Getter
     private String key;
