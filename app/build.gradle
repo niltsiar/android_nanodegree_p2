@@ -3,58 +3,60 @@ import org.eclipse.jgit.errors.RepositoryNotFoundException
 
 buildscript {
     ext.versions = [
-            apt                      : '1.8',
-            gradle_git               : '1.5.0',
-            gradle_versions          : '0.12.0',
-            dexcount                 : '0.5.4',
+            gradle_git               : '1.6.0',
+            gradle_versions          : '0.13.0',
+            dexcount                 : '0.6.2',
             retrolambda              : '2.3.0',
-            retrolambda_gradle_plugin: '3.2.5',
+            retrolambda_gradle_plugin: '3.4.0',
+            realm                    : '2.2.2',
 
-            support                  : '24.0.0',
+            support                  : '25.1.0',
             junit                    : '4.12',
-            dagger                   : '2.5',
-            butterknife              : '8.1.0',
-            rxjava                   : '1.1.6',
-            rxandroid                : '1.2.1',
-            timber                   : '4.1.2',
+            dagger                   : '2.8',
+            butterknife              : '8.4.0',
+            rxjava                   : '2.0.4',
+            rxandroid                : '2.0.1',
+            timber                   : '4.4.0',
             retrofit                 : '2.1.0',
-            okhttp                   : '3.3.1',
+            okhttp                   : '3.5.0',
             picasso                  : '2.5.2',
-            picasso2_okhttp3         : '1.0.2',
-            auto_value               : '1.2',
-            auto_value_moshi         : '0.3.2',
-            auto_value_parcel        : '0.2.2',
+            picasso2_okhttp3         : '1.1.0',
+            auto_value               : '1.3',
+            auto_value_moshi         : '0.4.2',
+            auto_value_parcel        : '0.2.5',
+            retrofit_rxjava2_adapter : '1.0.0',
+            lombok                   : '1.16.12',
     ]
     repositories {
         jcenter()
     }
     dependencies {
-        classpath "com.neenbedankt.gradle.plugins:android-apt:${versions.apt}"
         classpath "org.ajoberstar:gradle-git:${versions.gradle_git}"
         classpath "com.github.ben-manes:gradle-versions-plugin:${versions.gradle_versions}"
         classpath "com.getkeepsafe.dexcount:dexcount-gradle-plugin:${versions.dexcount}"
         classpath "me.tatarka:gradle-retrolambda:${versions.retrolambda_gradle_plugin}"
+        classpath "io.realm:realm-gradle-plugin:${versions.realm}"
     }
 }
 
 apply plugin: 'com.android.application'
-apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'com.github.ben-manes.versions'
 apply plugin: 'com.getkeepsafe.dexcount'
 apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'realm-android'
 
 //Version information
 def versionMajor = 0
-def versionMinor = 1
-def versionPatch = 1
+def versionMinor = 2
+def versionPatch = 0
 def versionRevision = getRevision();
 
 def appVersionCode = versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100
 def appVersionName = "${versionMajor}.${versionMinor}.${versionPatch}"
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.0"
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -63,7 +65,7 @@ android {
     defaultConfig {
         applicationId "eu.bquepab.popularmovies"
         minSdkVersion 15
-        targetSdkVersion 24
+        targetSdkVersion 25
         versionCode appVersionCode
         versionName appVersionName
 
@@ -71,8 +73,10 @@ android {
 
         buildConfigField "String", "THE_MOVIE_DATABASE_API_KEY", THE_MOVIE_DATABASE_API_KEY
         buildConfigField "String", "THE_MOVE_DATABASE_API_URL", '"https://api.themoviedb.org/3/"'
-        buildConfigField "String", "THE_MOVIE_DATABASE_IMAGE_URL", '"http://image.tmdb.org/t/p/w185"'
+        buildConfigField "String", "THE_MOVIE_DATABASE_IMAGE_URL", '"https://image.tmdb.org/t/p/w185"'
         buildConfigField "String", "THE_MOVIE_DATABASE_NO_POSTER_IMAGE_URL", '"https://assets.tmdb.org/assets/7f29bd8b3370c71dd379b0e8b570887c/images/no-poster-w185-v2.png"'
+        buildConfigField "String", "YOUTUBE_URL", '"https://www.youtube.com/watch?v=%s"'
+        buildConfigField "String", "YOUTUBE_IMG_URL", '"https://img.youtube.com/vi/%s/0.jpg"'
     }
     buildTypes {
         release {
@@ -97,28 +101,31 @@ dependencies {
     compile "com.jakewharton:butterknife:${versions.butterknife}"
     compile "com.jakewharton.timber:timber:${versions.timber}"
     compile "com.jakewharton.picasso:picasso2-okhttp3-downloader:${versions.picasso2_okhttp3}"
+    compile "com.jakewharton.retrofit:retrofit2-rxjava2-adapter:${versions.retrofit_rxjava2_adapter}"
 
     compile("com.squareup.retrofit2:retrofit:${versions.retrofit}") {
         exclude module: 'okhttp'
     }
     compile "com.squareup.retrofit2:converter-moshi:${versions.retrofit}"
-    compile "com.squareup.retrofit2:adapter-rxjava:${versions.retrofit}"
     compile "com.squareup.picasso:picasso:${versions.picasso}"
     compile "com.squareup.okhttp3:okhttp:${versions.okhttp}"
     compile "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}"
 
-    compile "io.reactivex:rxjava:${versions.rxjava}"
-    compile "io.reactivex:rxandroid:${versions.rxandroid}"
+    compile "io.reactivex.rxjava2:rxjava:${versions.rxjava}"
+    compile "io.reactivex.rxjava2:rxandroid:${versions.rxandroid}"
 
     testCompile "junit:junit:${versions.junit}"
 
     provided "com.google.auto.value:auto-value:${versions.auto_value}"
+    provided "com.ryanharter.auto.value:auto-value-moshi-annotations:${versions.auto_value_moshi}"
+    provided "org.projectlombok:lombok:${versions.lombok}"
 
-    apt "com.google.dagger:dagger-compiler:${versions.dagger}"
-    apt "com.google.auto.value:auto-value:${versions.auto_value}"
-    apt "com.ryanharter.auto.value:auto-value-moshi:${versions.auto_value_moshi}"
-    apt "com.ryanharter.auto.value:auto-value-parcel:${versions.auto_value_parcel}"
-    apt "com.jakewharton:butterknife-compiler:${versions.butterknife}"
+    annotationProcessor "com.google.dagger:dagger-compiler:${versions.dagger}"
+    annotationProcessor "com.google.auto.value:auto-value:${versions.auto_value}"
+    annotationProcessor "com.ryanharter.auto.value:auto-value-moshi:${versions.auto_value_moshi}"
+    annotationProcessor "com.ryanharter.auto.value:auto-value-parcel:${versions.auto_value_parcel}"
+    annotationProcessor "com.jakewharton:butterknife-compiler:${versions.butterknife}"
+    annotationProcessor "org.projectlombok:lombok:${versions.lombok}"
 
     retrolambdaConfig "net.orfjackal.retrolambda:retrolambda:${versions.retrolambda}"
 }

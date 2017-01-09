@@ -16,6 +16,10 @@ public abstract class Movie implements Parcelable {
         return new AutoValue_Movie.MoshiJsonAdapter(moshi);
     }
 
+    public static Builder builder() {
+        return new AutoValue_Movie.Builder();
+    }
+
     public abstract int id();
 
     public abstract String title();
@@ -39,5 +43,22 @@ public abstract class Movie implements Parcelable {
         } else {
             return BuildConfig.THE_MOVIE_DATABASE_NO_POSTER_IMAGE_URL;
         }
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract Builder id(int id);
+
+        public abstract Builder title(String title);
+
+        public abstract Builder posterPath(String posterPath);
+
+        public abstract Builder synopsis(String synopsis);
+
+        public abstract Builder userRating(float userRating);
+
+        public abstract Builder releaseDate(String releaseDate);
+
+        public abstract Movie build();
     }
 }

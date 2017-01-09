@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,17 +15,18 @@ import butterknife.BindInt;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import eu.bquepab.popularmovies.BuildConfig;
 import eu.bquepab.popularmovies.PopularMoviesApplication;
 import eu.bquepab.popularmovies.R;
-import eu.bquepab.popularmovies.api.DiscoverResponse;
-import eu.bquepab.popularmovies.api.TmdbService;
+import eu.bquepab.popularmovies.data.DataRepository;
 import eu.bquepab.popularmovies.model.Movie;
+import eu.bquepab.popularmovies.ui.adapter.MovieArrayAdapter;
+import io.reactivex.Maybe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -35,7 +37,7 @@ public class MovieListActivityFragment extends Fragment implements MovieArrayAda
     private static final String EXTRA_LAST_SORT = "last_sort_by";
 
     @Inject
-    TmdbService tmdbService;
+    DataRepository localStorage;
 
     @BindView(R.id.movies_grid)
     RecyclerView moviesRecyclerView;
@@ -47,6 +49,10 @@ public class MovieListActivityFragment extends Fragment implements MovieArrayAda
     String prefSortOrderByPopularity;
     @BindString(R.string.pref_sort_order_top_rated_value)
     String prefSortOrderByTopRated;
+    @BindString(R.string.pref_sort_order_favorites_value)
+    String prefSortOrderByFavorites;
+    @BindString(R.string.network_error_message)
+    String networkErrorMessage;
 
     private MovieArrayAdapter movieArrayAdapter;
     private ArrayList<Movie> movies;
@@ -59,9 +65,7 @@ public class MovieListActivityFragment extends Fragment implements MovieArrayAda
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
-
         final View view = inflater.inflate(R.layout.fragment_movie_list, container, false);
-
         PopularMoviesApplication.component().inject(this);
         ButterKnife.bind(this, view);
 
@@ -89,29 +93,7 @@ public class MovieListActivityFragment extends Fragment implements MovieArrayAda
     public void onResume() {
         super.onResume();
         final String sortByFromSettings = getSortByFromSettings();
-        if (!sortByFromSettings.equals(lastSortBy)) {
-            lastSortBy = sortByFromSettings;
-            refreshMovies(lastSortBy);
-        }
-    }
-
-    private String getSortByFromSettings() {
-        return PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(prefSortOrder, prefSortOrderByPopularity);
-    }
-
-    private void refreshMovies(final String sortBy) {
-        Observable<DiscoverResponse> responseObservable;
-        if (prefSortOrderByTopRated.equals(sortBy)) {
-            responseObservable = tmdbService.getTopRatedMovies(BuildConfig.THE_MOVIE_DATABASE_API_KEY);
-        } else {
-            responseObservable = tmdbService.getPopularMovies(BuildConfig.THE_MOVIE_DATABASE_API_KEY);
-        }
-        responseObservable.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(discoverResponse -> {
-                    movies = new ArrayList<>(discoverResponse.results());
-                    movieArrayAdapter.setMovies(movies);
-                });
+        sortMovies(sortByFromSettings);
     }
 
     @Override
@@ -121,6 +103,43 @@ public class MovieListActivityFragment extends Fragment implements MovieArrayAda
             outState.putParcelableArrayList(EXTRA_MOVIES, movies);
             outState.putString(EXTRA_LAST_SORT, lastSortBy);
         }
+    }
+
+    public void sortMovies(final String sortBy) {
+        if (!sortBy.equals(lastSortBy)) {
+            lastSortBy = sortBy;
+            refreshMovies(lastSortBy);
+        }
+    }
+
+    private String getSortByFromSettings() {
+        return PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(prefSortOrder, prefSortOrderByPopularity);
+    }
+
+    private void refreshMovies(final String sortBy) {
+        Maybe<List<Movie>> moviesMaybe = Maybe.empty();
+        if (prefSortOrderByTopRated.equals(sortBy)) {
+            moviesMaybe = localStorage.getTopRatedMovies();
+        } else if (prefSortOrderByPopularity.equals(sortBy)) {
+            moviesMaybe = localStorage.getPopularMovies();
+        } else if (prefSortOrderByFavorites.equals(sortBy)) {
+            moviesMaybe = localStorage.getStarredMovies();
+        }
+        moviesMaybe.subscribeOn(Schedulers.io())
+                   .observeOn(AndroidSchedulers.mainThread())
+                   .subscribe(movies -> {
+                       movies = new ArrayList<>(movies);
+                       movieArrayAdapter.setMovies(movies);
+                   }, exception -> {
+                       Timber.e(exception);
+                       View view = getView();
+                       if (null != view) {
+                           Snackbar.make(view, networkErrorMessage, Snackbar.LENGTH_LONG)
+                                   .show();
+                       }
+                       movies.clear();
+                       movieArrayAdapter.setMovies(movies);
+                   });
     }
 
     @Override

@@ -1,5 +1,6 @@
-package eu.bquepab.popularmovies.ui;
+package eu.bquepab.popularmovies.ui.adapter;
 
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import butterknife.BindInt;
 import butterknife.ButterKnife;
 import eu.bquepab.popularmovies.R;
 import eu.bquepab.popularmovies.model.Movie;
+import eu.bquepab.popularmovies.ui.viewholder.MovieViewHolder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,8 +47,9 @@ public class MovieArrayAdapter extends RecyclerView.Adapter<MovieViewHolder> {
     }
 
     public void setMovies(final List<Movie> movies) {
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new MovieDiffCallback(this.movies, movies));
+        diffResult.dispatchUpdatesTo(this);
         this.movies = new ArrayList<>(movies);
-        notifyDataSetChanged();
     }
 
     public interface OnMovieClickListener {
