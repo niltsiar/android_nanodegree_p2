@@ -83,8 +83,8 @@
 
     <ImageView
       android:id="@+id/movie_favorite_icon"
-      android:layout_width="64dp"
-      android:layout_height="64dp"
+      android:layout_width="@dimen/movie_details_favorite_icon_size"
+      android:layout_height="@dimen/movie_details_favorite_icon_size"
       android:layout_alignBottom="@id/movie_poster"
       android:layout_alignLeft="@id/movie_title"
       android:layout_alignStart="@id/movie_title"
