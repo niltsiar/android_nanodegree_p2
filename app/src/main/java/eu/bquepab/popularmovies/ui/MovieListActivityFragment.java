@@ -128,8 +128,8 @@ public class MovieListActivityFragment extends Fragment implements MovieArrayAda
         moviesMaybe.subscribeOn(Schedulers.io())
                    .observeOn(AndroidSchedulers.mainThread())
                    .subscribe(movies -> {
-                       movies = new ArrayList<>(movies);
-                       movieArrayAdapter.setMovies(movies);
+                       this.movies = new ArrayList<>(movies);
+                       movieArrayAdapter.setMovies(this.movies);
                    }, exception -> {
                        Timber.e(exception);
                        View view = getView();
