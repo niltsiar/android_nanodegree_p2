@@ -99,7 +99,7 @@ public class MovieListActivityFragment extends Fragment implements MovieArrayAda
     @Override
     public void onSaveInstanceState(final Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (null != movies && !movies.isEmpty()) {
+        if (null != movies) {
             outState.putParcelableArrayList(EXTRA_MOVIES, movies);
             outState.putString(EXTRA_LAST_SORT, lastSortBy);
         }

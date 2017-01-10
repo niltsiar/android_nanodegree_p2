@@ -67,7 +67,7 @@ public class MovieDetailsTrailersActivityFragment extends Fragment implements Tr
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (null != trailers && !trailers.isEmpty()) {
+        if (null != trailers) {
             outState.putParcelableArrayList(EXTRA_TRAILERS, trailers);
         }
     }

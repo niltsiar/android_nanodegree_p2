@@ -63,7 +63,7 @@ public class MovieDetailsReviewsActivityFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (null != reviews && !reviews.isEmpty()) {
+        if (null != reviews) {
             outState.putParcelableArrayList(EXTRA_REVIEWS, reviews);
         }
     }
